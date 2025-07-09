@@ -1,0 +1,50 @@
+name: Deploy to Server via SSH
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Add server to known_hosts
+        run: |
+          mkdir ~/.ssh/
+          ssh-keyscan 34.173.239.203 >> ~/.ssh/known_hosts
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Deploy via SSH
+        run: |
+          ssh github-actions@34.173.239.203 << 'EOF'
+            set -e
+
+            # Clone if not already cloned
+            if [ ! -d "/home/github-actions/GitFlou/" ]; then
+              git clone https://github.com/AndreyAndrey1980/GitFlou.git /home/github-actions/GitFlou/
+            fi
+
+            cd /home/github-actions/GitFlou/
+
+            # Pull latest changes
+            git pull origin main
+
+            # Decode env files from .b64 to actual files
+            echo "[+] Decoding env files..."
+            base64 -d ${{ secrets.ENV }} > .env
+
+            # Start or restart containers
+            echo "[+] Rebuilding and restarting containers..."
+            docker system prune
+            docker compose down
+            docker compose up -d --build
+          EOF
