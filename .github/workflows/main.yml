@@ -40,7 +40,8 @@ jobs:
 
             # Decode env files from .b64 to actual files
             echo "[+] Decoding env files..."
-            base64 -d ${{ secrets.ENV }} > .env
+            echo ${{ secrets.ENV }} > .envstr
+            base64 -d .envstr > .env
 
             # Start or restart containers
             echo "[+] Rebuilding and restarting containers..."
