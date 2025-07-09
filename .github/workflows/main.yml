@@ -47,5 +47,5 @@ jobs:
             echo "[+] Rebuilding and restarting containers..."
             docker system prune -af
             docker compose down
-            docker compose up -d --build
+            sudo docker compose up -d --build
           EOF
