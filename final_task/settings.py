@@ -39,7 +39,7 @@ SECRET_KEY = \
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["http://34.173.239.203/","http://34.173.239.203:80"]
 
 # Application definition
 
