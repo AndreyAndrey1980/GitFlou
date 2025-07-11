@@ -1,6 +1,8 @@
 # Рабочий процесс
 
-1. Заполнить .template_env (добавить TELEGRAM_TOKEN, TELEGRAM_USER_ID)
+Локально:
+
+1. Заполнить .template_env (добавить TELEGRAM_TOKEN)
 
 2. Переименовать .template_env на .env
 
@@ -9,3 +11,16 @@
 4. Зайти на 127.0.0.1:8000, добавить привычки по api
 
 5. Ждать сообщения от бота
+
+Прод:
+
+1. Заполнить .template_env (добавить TELEGRAM_TOKEN)
+
+2. Переименовать .template_env на .env
+
+3. Если что-то поменялось в .env - сделать
+
+base64 -w 0 .env > .env.b64
+Скопировать содержимое файла в github secrets
+
+4. Запушить в репо

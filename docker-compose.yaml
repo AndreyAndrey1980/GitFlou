@@ -7,11 +7,15 @@ services:
       - .env
     ports:
       - "5432:5432"
+    networks:
+      - app-network
 
   redis:
     image: redis:7
     ports:
       - "6379:6379"
+    networks:
+      - app-network
 
   django:
     build: .
@@ -27,6 +31,8 @@ services:
     depends_on:
       - db
       - redis
+    networks:
+      - app-network
     restart: always
 
   celery:
@@ -39,6 +45,8 @@ services:
     depends_on:
       - redis
       - django
+    networks:
+      - app-network
 
   celery-beat:
     build: .
@@ -50,6 +58,24 @@ services:
     depends_on:
       - redis
       - django
+    networks:
+      - app-network
+
+  nginx:
+    image: nginx:stable-alpine
+    container_name: nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - django
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
 
 volumes:
   postgres_data:
